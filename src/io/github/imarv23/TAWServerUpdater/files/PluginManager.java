@@ -1,38 +1,31 @@
 package io.github.imarv23.TAWServerUpdater.files;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
-import static java.nio.file.StandardCopyOption.*;
+public class PluginManager {
 
-public class FileManager {
-	
 	private File sourceFile;
 	private long lastModified;
 	private int successfulUpdates;
 	private int filesAlreadyUpToDate;
 	private int failedUpdates;
-	/**
-	 * Constructor
-	 * Saves the original file & gets the date when it was modified the last time
-	 * @param source
-	 */
-	public FileManager(String source)
-	{
+	private int noFileToUpdate;
+	
+	public PluginManager(String source) {
 		this.successfulUpdates = 0;
 		this.failedUpdates = 0;
 		this.filesAlreadyUpToDate = 0;
+		this.noFileToUpdate = 0;
 		
 		this.sourceFile = new File(source);
 		this.lastModified = this.sourceFile.lastModified();
 	}
-	
-	/**
-	 * Compares the "original" file with the ones in the folders given by the path and replaces old files.
-	 * @param path
-	 */
+
 	public void checkForUpdates(String path)
 	{
 		File[] directoryList = new File(path).listFiles();
@@ -40,12 +33,12 @@ public class FileManager {
 		
 		for(File directory : directoryList)
 		{
-			filesToUpdate.add(new File(directory.getPath() + "\\" +  this.sourceFile.getName()));
+			filesToUpdate.add(new File(directory.getPath() + "\\plugins\\" +  this.sourceFile.getName()));
 		}
 		
 		for(File fileToCompare : filesToUpdate)
 		{
-			if(fileToCompare.lastModified() != this.lastModified)
+			if(fileToCompare.lastModified() != this.lastModified && fileToCompare.lastModified() > 0)
 			{
 				try{
 					Files.copy(this.sourceFile.toPath(), fileToCompare.toPath(), REPLACE_EXISTING);
@@ -60,6 +53,9 @@ public class FileManager {
 			}else if(fileToCompare.lastModified() == this.lastModified)
 			{
 				this.filesAlreadyUpToDate++;
+			
+			}else if(fileToCompare.lastModified() <= 0){
+				this.noFileToUpdate++;
 			}else{
 				System.out.println("Unknown Error");
 			}
@@ -73,6 +69,6 @@ public class FileManager {
 		System.out.println(this.filesAlreadyUpToDate + " files already up to date,");
 		System.out.println(this.successfulUpdates + " files have been updated,");
 		System.out.println(this.failedUpdates + " file updates failed.");
+		System.out.println(this.noFileToUpdate + " directories without the plugin. \n");
 	}
-	
 }
