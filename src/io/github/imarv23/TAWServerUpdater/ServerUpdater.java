@@ -11,22 +11,23 @@ public class ServerUpdater {
 			if("server".equals(args[2]))
 			{
 				FileManager fm = new FileManager(args[0]);
+				System.out.println("Updating Server jars");
 				fm.checkForUpdates(args[1]);
 			}else if("plugin".equals(args[2]))
 			{
 				PluginManager pm = new PluginManager(args[0]);
+				System.out.println("Updating plugin");
 				pm.checkForUpdates(args[1]);
 			}else if("allplugins".equals(args[2]))
 			{
 				AllPluginsUpdater apu = new AllPluginsUpdater(args[0], args[1]);
+				System.out.println("Updating all plugins");
 				apu.update();
 			}
 		}
 		catch(ArrayIndexOutOfBoundsException e)
 		{
-			System.out.println("There is at least one attribute missing.\n Make sure that you run the jar like this:");
-			System.out.println("TawServerUpdater.jar <complete path to source file> <complete path to destination folder>");
-			System.out.println("Make sure that the folders in the destination folder are named like that:\n server_0, server_1, server_2 (...)");
+			System.out.println("One or more parameters are wrong, check the readme on github to make sure that you are using this tool correctly.");
 		}
 	}
 
