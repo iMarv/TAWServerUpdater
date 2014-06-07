@@ -49,6 +49,7 @@ public class FileManager {
 			{
 				try{
 					Files.copy(this.sourceFile.toPath(), fileToCompare.toPath(), REPLACE_EXISTING);
+					System.out.println(this.sourceFile.getName());
 					this.successfulUpdates++;
 				}
 				catch(IOException e)
